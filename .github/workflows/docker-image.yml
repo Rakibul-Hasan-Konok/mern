@@ -5,7 +5,7 @@ on:
     branches:
       - master       # master branch push trigger
     tags:
-      - 'v*'         # Git tag push trigger (v1, v2, ...)
+      - 'v*'         # Git tag push trigger (v1, v2...)
 
 jobs:
   build-and-push:
@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      # Step 4: Set version from Git tag or fallback to commit count
+      # Step 4: Set Docker image version (tag from Git tag or commit count)
       - name: Set Docker image version
         id: vars
         run: |
@@ -36,6 +36,7 @@ jobs:
           else
             VERSION=$(git rev-list --count HEAD)
             echo "VERSION=v$VERSION" >> $GITHUB_ENV
+          fi
 
       # Step 5: Build & Push Backend
       - name: Build & Push Backend

@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: windows-latest   # Windows runner use করা হয়েছে
+    runs-on: ubuntu-latest   # ✅ Linux runner
 
     steps:
       - name: Checkout repository
@@ -32,7 +32,8 @@ jobs:
           docker build -t rhkonok/mern-frontend:latest ./mern/frontend
           docker push rhkonok/mern-frontend:latest
 
-      - name: Build & Push MongoDB (optional)
+      - name: Build & Push MongoDB
         run: |
-          docker build -t rhkonok/mern-mongodb:latest ./mern/mongodb
+          docker pull mongo:7.0
+          docker tag mongo:7.0 rhkonok/mern-mongodb:latest
           docker push rhkonok/mern-mongodb:latest

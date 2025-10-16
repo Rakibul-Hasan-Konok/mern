@@ -1,13 +1,17 @@
-# Stage 1: Build React app
-FROM node:18-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci          # install all dependencies for build
-COPY . .
-RUN npm run build   # build /dist folder
+FROM node:18.9.1
 
-# Stage 2: Serve with Nginx
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+
+WORKDIR /app
+
+
+COPY package.json .
+
+
+RUN npm install
+
 EXPOSE 5173
-CMD ["nginx", "-g", "daemon off;"]
+
+
+COPY . .
+
+CMD ["npm", "run", "dev"]

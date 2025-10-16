@@ -1,24 +1,24 @@
 services:
   backend:
-    build: ./mern/backend
+    build: ./mern/backend        # backend Dockerfile থেকে build হবে
     ports:
-      - "5050:5050"
+      - "5050:5050"              # host:container port mapping
     networks:
-      - mern_network
+      - mern_network             # backend একই network এ
     depends_on:
-      - mongodb
+      - mongodb                  # mongodb আগে start হবে
 
   mongodb:
-    image: mongo:latest
+    image: mongo:latest           # official mongo image use করা হচ্ছে
     ports:
       - "27017:27017"
     networks:
       - mern_network
     volumes:
-      - mongo-data:/data/db  
+      - mongo-data:/data/db       # data persistence
 
   frontend:
-    build: ./mern/frontend
+    build: ./mern/frontend        # frontend Dockerfile থেকে build হবে
     ports:
       - "5173:5173"
     networks:
@@ -26,8 +26,8 @@ services:
 
 networks:
   mern_network:
-    driver: bridge
+    driver: bridge                 # private bridge network
 
 volumes:
   mongo-data:
-    driver: local  
+    driver: local                  # local volume

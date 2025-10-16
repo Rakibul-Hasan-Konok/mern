@@ -7,11 +7,14 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest   # ✅ Linux runner
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: List repository files
+        run: ls -R
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -24,15 +27,17 @@ jobs:
 
       - name: Build & Push Backend
         run: |
-          docker build -t rhkonok/mern-backend:latest ./mern/backend
+          cd ./mern/backend
+          docker build -t rhkonok/mern-backend:latest .
           docker push rhkonok/mern-backend:latest
 
       - name: Build & Push Frontend
         run: |
-          docker build -t rhkonok/mern-frontend:latest ./mern/frontend
+          cd ./mern/frontend
+          docker build -t rhkonok/mern-frontend:latest .
           docker push rhkonok/mern-frontend:latest
 
-      - name: Build & Push MongoDB
+      - name: Push MongoDB
         run: |
           docker pull mongo:7.0
           docker tag mongo:7.0 rhkonok/mern-mongodb:latest

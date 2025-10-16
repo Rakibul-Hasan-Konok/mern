@@ -3,10 +3,9 @@ name: Build & Push MERN Docker Images
 on:
   push:
     branches:
-      - main
-  # Git tag push এও ট্রিগার হবে
-  tags:
-    - 'v*'
+      - master       # master branch push trigger
+    tags:
+      - 'v*'         # Git tag push trigger (v1, v2, ...)
 
 jobs:
   build-and-push:
@@ -17,22 +16,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Debug - list repo structure
-      - name: List repository files
-        run: ls -R
-
-      # Step 3: Set up Docker Buildx
+      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Step 4: Docker Hub Login
+      # Step 3: Docker Hub Login
       - name: Docker Hub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      # Step 5: Set version from Git tag or fallback to latest commit count
+      # Step 4: Set version from Git tag or fallback to commit count
       - name: Set Docker image version
         id: vars
         run: |
@@ -41,9 +36,8 @@ jobs:
           else
             VERSION=$(git rev-list --count HEAD)
             echo "VERSION=v$VERSION" >> $GITHUB_ENV
-          fi
 
-      # Step 6: Build & Push Backend
+      # Step 5: Build & Push Backend
       - name: Build & Push Backend
         run: |
           cd ./mern/backend
@@ -52,7 +46,7 @@ jobs:
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$VERSION
 
-      # Step 7: Build & Push Frontend
+      # Step 6: Build & Push Frontend
       - name: Build & Push Frontend
         run: |
           cd ./mern/frontend
@@ -61,7 +55,7 @@ jobs:
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$VERSION
 
-      # Step 8: Push MongoDB official image
+      # Step 7: Push MongoDB official image
       - name: Push MongoDB
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/mern-mongodb

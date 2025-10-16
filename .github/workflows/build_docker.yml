@@ -1,4 +1,4 @@
-name: Build & Deploy MERN Docker App
+name: Build & Push MERN Docker Images
 
 on:
   push:
@@ -6,15 +6,15 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Debug - list files
+      # Step 2: Debug - list repo structure
       - name: List repository files
         run: ls -R
 
@@ -32,14 +32,14 @@ jobs:
       # Step 5: Build & Push Backend
       - name: Build & Push Backend
         run: |
-          cd ./backend
+          cd ./mern/backend
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/mern-backend:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mern-backend:latest
 
       # Step 6: Build & Push Frontend
       - name: Build & Push Frontend
         run: |
-          cd ./frontend
+          cd ./mern/frontend
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/mern-frontend:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mern-frontend:latest
 
@@ -49,15 +49,3 @@ jobs:
           docker pull mongo:latest
           docker tag mongo:latest ${{ secrets.DOCKER_HUB_USERNAME }}/mern-mongodb:latest
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mern-mongodb:latest
-
-      # Optional Step 8: Deploy using docker-compose on server (requires SSH)
-      #- name: Deploy via SSH
-      #  uses: appleboy/ssh-action@v0.1.8
-      #  with:
-      #    host: ${{ secrets.HOST }}
-      #    username: ${{ secrets.USERNAME }}
-      #    key: ${{ secrets.SSH_KEY }}
-      #    script: |
-      #      cd /home/${{ secrets.USERNAME }}/mern
-      #      docker compose pull
-      #      docker compose up -d --build

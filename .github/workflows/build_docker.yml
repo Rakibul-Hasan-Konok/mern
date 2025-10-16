@@ -41,9 +41,9 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.8
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.HOST }}        # Server IP or hostname
+          username: ${{ secrets.USERNAME }} # Server username
+          key: ${{ secrets.SSH_KEY }}       # Private SSH key secret
           script: |
             cd /home/${{ secrets.USERNAME }}/mern
             git pull origin main

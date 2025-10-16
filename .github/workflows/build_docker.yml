@@ -22,8 +22,8 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.RHKONOK }}          # Docker Hub username
-          password: ${{ secrets.DOCKER_HUB_TOKEN }} # Personal Access Token
+          username: ${{ secrets.RHKONOK }}          # Docker Hub username secret
+          password: ${{ secrets.DOCKER_HUB_TOKEN }} # Docker Hub token secret
 
       # 4️⃣ Build & push backend image
       - name: Build & push backend image
@@ -41,9 +41,9 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.8
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.HOST }}               # Server IP / hostname
+          username: ${{ secrets.USERNAME }}       # Server username
+          key: ${{ secrets.SSH_KEY }}             # Private SSH key
           script: |
             cd /home/${{ secrets.USERNAME }}/mern
             git pull origin main
